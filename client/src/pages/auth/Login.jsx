@@ -32,12 +32,10 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-bg-primary flex items-center justify-center px-4 relative overflow-hidden">
-      {/* Background glow */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-teal-400/5 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-accent-purple/5 rounded-full blur-3xl pointer-events-none" />
 
       <div className="w-full max-w-md animate-slide-up relative z-10">
-        {/* Logo */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2.5 mb-6">
             <div className="w-10 h-10 rounded-xl bg-teal-400 flex items-center justify-center shadow-glow">
@@ -49,7 +47,6 @@ export default function Login() {
           <p className="font-dm text-slate-400 text-sm">Sign in to your agency dashboard</p>
         </div>
 
-        {/* Card */}
         <div className="glass-card p-8">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             <div>
@@ -75,7 +72,10 @@ export default function Login() {
                   type={showPassword ? "text" : "password"}
                   placeholder="••••••••"
                   className={`input-field pr-12 ${errors.password ? "border-red-500" : ""}`}
-                  {...register("password", { required: "Password is required", minLength: { value: 6, message: "Min 6 characters" } })}
+                  {...register("password", {
+                    required: "Password is required",
+                    minLength: { value: 6, message: "Min 6 characters" },
+                  })}
                 />
                 <button
                   type="button"
