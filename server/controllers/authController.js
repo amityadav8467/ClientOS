@@ -7,7 +7,7 @@ const {
   generateRefreshToken,
   verifyRefreshToken,
 } = require("../utils/jwt");
-const { sendEmail, getEmailConfigError, otpEmailTemplate, adminInviteEmailTemplate, adminRegistrationOtpEmailTemplate } = require("../utils/email");
+const { sendEmail, otpEmailTemplate, adminInviteEmailTemplate, adminRegistrationOtpEmailTemplate } = require("../utils/email");
 
 const hashCaptchaAnswer = (answer) => {
   return crypto
@@ -258,8 +258,7 @@ const login = async (req, res) => {
       return res.status(400).json({ message: "Invalid or expired CAPTCHA" });
     }
 
-    const normalizedEmail = String(email).toLowerCase().trim();
-    const user = await User.findOne({ email: normalizedEmail }).select("+password");
+    const user = await User.findOne({ email }).select("+password");
     if (!user) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
@@ -418,13 +417,7 @@ const forgotPassword = async (req, res) => {
     const { email } = req.body;
     if (!email) return res.status(400).json({ message: "Email is required" });
 
-    const emailConfigError = getEmailConfigError();
-    if (emailConfigError) {
-      return res.status(503).json({ message: emailConfigError });
-    }
-
-    const normalizedEmail = String(email).toLowerCase().trim();
-    const user = await User.findOne({ email: normalizedEmail });
+    const user = await User.findOne({ email: email.toLowerCase() });
     // Always return success to prevent email enumeration
     if (!user) {
       return res.json({ success: true, message: "If that email exists, an OTP has been sent." });
@@ -444,7 +437,7 @@ const forgotPassword = async (req, res) => {
       to: user.email,
       subject: "Your Password Reset OTP - Codexora Solutions",
       html: otpEmailTemplate(user.name, otp),
-    }, { strict: true });
+    });
 
     res.json({ success: true, message: "OTP sent to your email address." });
   } catch (error) {
@@ -459,8 +452,7 @@ const verifyOtp = async (req, res) => {
     const { email, otp } = req.body;
     if (!email || !otp) return res.status(400).json({ message: "Email and OTP are required" });
 
-    const normalizedEmail = String(email).toLowerCase().trim();
-    const user = await User.findOne({ email: normalizedEmail }).select("+resetOtp +resetOtpExpiry +resetOtpVerified");
+    const user = await User.findOne({ email: email.toLowerCase() }).select("+resetOtp +resetOtpExpiry +resetOtpVerified");
 
     if (!user || !user.resetOtp) {
       return res.status(400).json({ message: "Invalid or expired OTP. Request a new one." });
@@ -491,8 +483,7 @@ const resetPassword = async (req, res) => {
     if (!email || !newPassword) return res.status(400).json({ message: "All fields required" });
     if (newPassword.length < 6) return res.status(400).json({ message: "Password must be at least 6 characters" });
 
-    const normalizedEmail = String(email).toLowerCase().trim();
-    const user = await User.findOne({ email: normalizedEmail }).select("+resetOtp +resetOtpExpiry +resetOtpVerified");
+    const user = await User.findOne({ email: email.toLowerCase() }).select("+resetOtp +resetOtpExpiry +resetOtpVerified");
 
     if (!user || !user.resetOtpVerified) {
       return res.status(400).json({ message: "Please verify OTP first before resetting password." });

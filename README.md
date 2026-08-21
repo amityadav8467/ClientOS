@@ -83,8 +83,6 @@ EMAIL_PASS=your_gmail_app_password
 CLIENT_URL=http://localhost:5173
 ```
 
-> `EMAIL_USER` and `EMAIL_PASS` are required for forgot-password OTP emails. If missing/invalid, API returns a clear configuration error.
-
 **Client** — copy `client/.env.example` to `client/.env`:
 
 ```env
