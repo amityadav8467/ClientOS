@@ -136,7 +136,7 @@ export default function ForgotPassword() {
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-teal-400/5 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 right-0 w-80 h-80 bg-accent-purple/5 rounded-full blur-3xl pointer-events-none" />
 
-      <div className="w-full max-w-md relative z-10 animate-slide-up">
+      <div className="w-full max-w-xl relative z-10 animate-slide-up">
         {/* Logo */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2.5 mb-5">
@@ -160,7 +160,7 @@ export default function ForgotPassword() {
               return (
                 <div key={s.id} className="flex items-center gap-2">
                   <div className="flex flex-col items-center gap-1">
-                    <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-syne font-bold transition-all
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-syne font-bold transition-all
                       ${isDone ? "bg-teal-400 text-bg-primary" : isActive ? "bg-teal-400/20 border-2 border-teal-400 text-teal-400" : "bg-bg-card border border-bg-border text-slate-500"}`}>
                       {isDone ? <CheckCircle2 size={14} /> : i + 1}
                     </div>
@@ -168,7 +168,7 @@ export default function ForgotPassword() {
                       {s.label}
                     </span>
                   </div>
-                  {i < 2 && <div className={`w-12 h-px mb-4 ${isDone ? "bg-teal-400" : "bg-bg-border"}`} />}
+                  {i < 2 && <div className={`w-14 h-px mb-4 ${isDone ? "bg-teal-400" : "bg-bg-border"}`} />}
                 </div>
               );
             })}
@@ -177,7 +177,7 @@ export default function ForgotPassword() {
 
         {/* ── STEP 1: Email ── */}
         {step === "email" && (
-          <div className="glass-card p-8">
+          <div className="glass-card p-9 shadow-[0_24px_70px_rgba(0,0,0,0.55)]">
             <div className="flex flex-col items-center mb-6">
               <div className="w-14 h-14 rounded-2xl bg-teal-400/10 border border-teal-400/20 flex items-center justify-center mb-4">
                 <Mail size={26} className="text-teal-400" />
@@ -193,7 +193,7 @@ export default function ForgotPassword() {
                 <label className="label">Email Address</label>
                 <input
                   type="email"
-                  placeholder="your@email.com"
+                  placeholder="ay990351@gmail.com"
                   className={`input-field ${emailForm.formState.errors.email ? "border-red-500" : ""}`}
                   {...emailForm.register("email", { required: "Email is required" })}
                 />
@@ -202,7 +202,7 @@ export default function ForgotPassword() {
                 )}
               </div>
               <button type="submit" disabled={emailForm.formState.isSubmitting}
-                className="btn-primary w-full flex items-center justify-center gap-2 py-3">
+                className="btn-primary w-full flex items-center justify-center gap-2 py-3.5 text-base">
                 {emailForm.formState.isSubmitting
                   ? <span className="w-4 h-4 border-2 border-bg-primary/30 border-t-bg-primary rounded-full animate-spin" />
                   : <Mail size={16} />}
@@ -221,7 +221,7 @@ export default function ForgotPassword() {
 
         {/* ── STEP 2: OTP ── */}
         {step === "otp" && (
-          <div className="glass-card p-8">
+          <div className="glass-card p-9 shadow-[0_24px_70px_rgba(0,0,0,0.55)]">
             <div className="flex flex-col items-center mb-6">
               <div className="w-14 h-14 rounded-2xl bg-violet-400/10 border border-violet-400/20 flex items-center justify-center mb-4">
                 <ShieldCheck size={26} className="text-violet-400" />
@@ -260,7 +260,7 @@ export default function ForgotPassword() {
             <button
               onClick={handleVerifyOtp}
               disabled={verifying || otp.join("").length < 6}
-              className="btn-primary w-full flex items-center justify-center gap-2 py-3 mb-4"
+              className="btn-primary w-full flex items-center justify-center gap-2 py-3.5 text-base mb-4"
             >
               {verifying
                 ? <span className="w-4 h-4 border-2 border-bg-primary/30 border-t-bg-primary rounded-full animate-spin" />
@@ -291,7 +291,7 @@ export default function ForgotPassword() {
 
         {/* ── STEP 3: Reset Password ── */}
         {step === "reset" && (
-          <div className="glass-card p-8">
+          <div className="glass-card p-9 shadow-[0_24px_70px_rgba(0,0,0,0.55)]">
             <div className="flex flex-col items-center mb-6">
               <div className="w-14 h-14 rounded-2xl bg-teal-400/10 border border-teal-400/20 flex items-center justify-center mb-4">
                 <Lock size={26} className="text-teal-400" />
@@ -365,7 +365,7 @@ export default function ForgotPassword() {
               )}
 
               <button type="submit" disabled={resetForm.formState.isSubmitting}
-                className="btn-primary w-full flex items-center justify-center gap-2 py-3 mt-2">
+                className="btn-primary w-full flex items-center justify-center gap-2 py-3.5 text-base mt-2">
                 {resetForm.formState.isSubmitting
                   ? <span className="w-4 h-4 border-2 border-bg-primary/30 border-t-bg-primary rounded-full animate-spin" />
                   : <Lock size={16} />}
@@ -377,7 +377,7 @@ export default function ForgotPassword() {
 
         {/* ── STEP 4: Done ── */}
         {step === "done" && (
-          <div className="glass-card p-10 flex flex-col items-center text-center gap-5">
+          <div className="glass-card p-10 shadow-[0_24px_70px_rgba(0,0,0,0.55)] flex flex-col items-center text-center gap-5">
             <div className="w-20 h-20 rounded-full bg-teal-400/10 border-2 border-teal-400/30
               flex items-center justify-center">
               <CheckCircle2 size={40} className="text-teal-400" />

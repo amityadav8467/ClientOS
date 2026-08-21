@@ -36,7 +36,7 @@ export default function Login() {
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-accent-purple/5 rounded-full blur-3xl pointer-events-none" />
 
       <div className="w-full max-w-md animate-slide-up relative z-10">
-        <div className="text-center mb-8">
+        <div className="text-center mb-9">
           <div className="inline-flex items-center gap-2.5 mb-6">
             <div className="w-10 h-10 rounded-xl bg-teal-400 flex items-center justify-center shadow-glow">
               <Zap size={20} className="text-bg-primary" strokeWidth={2.5} />
@@ -47,13 +47,13 @@ export default function Login() {
           <p className="font-dm text-slate-400 text-sm">Sign in to your agency dashboard</p>
         </div>
 
-        <div className="glass-card p-8">
+        <div className="glass-card p-8 shadow-[0_24px_70px_rgba(0,0,0,0.55)]">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             <div>
               <label className="label">Email Address</label>
               <input
                 type="email"
-                placeholder="amit@codexora.com"
+                placeholder="ay990351@gmail.com"
                 className={`input-field ${errors.email ? "border-red-500" : ""}`}
                 {...register("email", { required: "Email is required" })}
               />
@@ -99,7 +99,7 @@ export default function Login() {
             <button
               type="submit"
               disabled={loading}
-              className="btn-primary w-full flex items-center justify-center gap-2 mt-2"
+              className="btn-primary w-full flex items-center justify-center gap-2 mt-2 py-3.5 text-base"
             >
               {loading ? (
                 <>
