@@ -10,11 +10,21 @@ const createTransporter = () => {
   });
 };
 
-const sendEmail = async ({ to, subject, html }) => {
+const getEmailConfigError = () => {
   if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    return "Email service is not configured. Set EMAIL_USER and EMAIL_PASS.";
+  }
+  return null;
+};
+
+const sendEmail = async ({ to, subject, html }, { strict = false } = {}) => {
+  const emailConfigError = getEmailConfigError();
+  if (emailConfigError) {
+    if (strict) throw new Error(emailConfigError);
     console.warn("⚠️  Email not configured — skipping email send");
     return false;
   }
+
   try {
     const transporter = createTransporter();
     await transporter.sendMail({
@@ -24,9 +34,12 @@ const sendEmail = async ({ to, subject, html }) => {
       html,
     });
     return true;
-    console.log(`📧 Email sent to ${to}`);
   } catch (err) {
+    if (strict) {
+      throw new Error(`Email send failed: ${err.message}`);
+    }
     console.error("❌ Email send failed:", err.message);
+    return false;
   }
 };
 
@@ -200,4 +213,4 @@ const adminRegistrationOtpEmailTemplate = (email, otp) => `
 </body>
 </html>`;
 
-module.exports = { sendEmail, invoiceEmailTemplate, proposalEmailTemplate, welcomeClientTemplate, otpEmailTemplate, adminInviteEmailTemplate, adminRegistrationOtpEmailTemplate };
+module.exports = { sendEmail, getEmailConfigError, invoiceEmailTemplate, proposalEmailTemplate, welcomeClientTemplate, otpEmailTemplate, adminInviteEmailTemplate, adminRegistrationOtpEmailTemplate };

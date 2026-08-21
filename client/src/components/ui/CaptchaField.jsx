@@ -1,27 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { ShieldCheck, RefreshCw } from "lucide-react";
-
-function generateCaptcha() {
-  const ops = ["+", "-", "×"];
-  const op = ops[Math.floor(Math.random() * ops.length)];
-  let a, b, answer;
-
-  if (op === "+") {
-    a = Math.floor(Math.random() * 20) + 1;
-    b = Math.floor(Math.random() * 20) + 1;
-    answer = a + b;
-  } else if (op === "-") {
-    a = Math.floor(Math.random() * 20) + 10;
-    b = Math.floor(Math.random() * 10) + 1;
-    answer = a - b;
-  } else {
-    a = Math.floor(Math.random() * 9) + 2;
-    b = Math.floor(Math.random() * 9) + 2;
-    answer = a * b;
-  }
-
-  return { question: `${a} ${op} ${b}`, answer: String(answer) };
-}
+import api from "../../utils/api";
 
 export default function CaptchaField({
   register,
@@ -30,27 +9,44 @@ export default function CaptchaField({
   setValue,
   refreshKey,
 }) {
-  const [captcha, setCaptcha] = useState(() => generateCaptcha());
+  const [captcha, setCaptcha] = useState({ captchaId: "", question: "" });
   const [inputValue, setInputValue] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const refresh = useCallback(() => {
-    const next = generateCaptcha();
-    setCaptcha(next);
-    setInputValue("");
-    setValue("captchaAnswer", "");
-    // Pass the answer as the "captchaId" so Login can validate it
-    if (onChallenge) onChallenge(next.answer);
+    const fetchCaptcha = async () => {
+      setLoading(true);
+      setInputValue("");
+      setValue("captchaAnswer", "");
+      if (onChallenge) onChallenge("");
+      try {
+        const res = await api.get("/api/auth/captcha");
+        const next = {
+          captchaId: res.data?.captchaId || "",
+          question: res.data?.question || "",
+        };
+        setCaptcha(next);
+        if (onChallenge) onChallenge(next.captchaId);
+      } catch {
+        setCaptcha({ captchaId: "", question: "Unable to load CAPTCHA" });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCaptcha();
   }, [onChallenge, setValue]);
 
-  // Initialize on mount
   useEffect(() => {
-    if (onChallenge) onChallenge(captcha.answer);
-  }, []);
+    refresh();
+  }, [refresh]);
 
   // Refresh when parent increments refreshKey (e.g. on failed login)
   useEffect(() => {
-    if (refreshKey > 0) refresh();
-  }, [refreshKey]);
+    if (refreshKey > 0) {
+      refresh();
+    }
+  }, [refreshKey, refresh]);
 
   return (
     <div>
@@ -73,11 +69,9 @@ export default function CaptchaField({
           className={`input-field flex-1 text-center font-syne font-bold text-lg
             [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none
             [&::-webkit-inner-spin-button]:appearance-none
-            ${errors.captchaAnswer ? "border-red-500" : ""}`}
+           ${errors.captchaAnswer ? "border-red-500" : ""}`}
           {...register("captchaAnswer", {
             required: "Please answer the security check",
-            validate: (val) =>
-              String(parseInt(val)) === captcha.answer || "Wrong answer — try again",
           })}
           onChange={(e) => {
             setInputValue(e.target.value);
@@ -89,11 +83,12 @@ export default function CaptchaField({
         <button
           type="button"
           onClick={refresh}
+          disabled={loading}
           className="w-11 h-11 rounded-xl border border-bg-border flex items-center justify-center
             text-slate-500 hover:text-teal-400 hover:border-teal-400/40 transition-all flex-shrink-0"
           title="Get new question"
         >
-          <RefreshCw size={16} />
+          <RefreshCw size={16} className={loading ? "animate-spin" : ""} />
         </button>
       </div>
 
